@@ -28,8 +28,8 @@ Details:  This module takes input
 
 max_pd_display()
 fileVars = FileDateVars.from_inputs()
-email_input = str(input('''Are you ready to send all the education emails to each Director? \n Please input 
-\'yes\' or \'no\', or type \'exit()\' to quit.'''))
+email_input = str(input('''Are you ready to send all the education emails to each Director?  Please know this is a \
+butt-load of emails and is super embarrassing if you make a mistake! \nPlease input \'yes\' or \'no\', or type \'exit()\' to quit.'''))
 email_input = check_answer(email_input)
 send_email = double_check(email_input)
 if email_input == False:
@@ -237,7 +237,7 @@ global date_month
 date_month = datetime.today().strftime('%Y-%m')
 # main alias sheet from masterAliasRecord to a dataframe
 # limit alias dataframe to cost center and UD Email
-alias_df = master_alias[['UNMH_Cost_Center', 'UD_Email', 'NDNQI_Reporting_Unit_Name']]
+alias_df = master_alias[['UNMH_Cost_Center', 'UD_Email', 'NCI_Standard_Name']]
 alias_df = alias_df.dropna()
 alias_df['UNMH_Cost_Center'] = alias_df['UNMH_Cost_Center'].astype(str)
 alias_df['UNMH_Cost_Center'] = alias_df['UNMH_Cost_Center'].str[:5]
@@ -248,14 +248,17 @@ cost_center_list = alias_df['UNMH_Cost_Center'].values.tolist()
 # convert the alias record to a dictionary
 email_dict = alias_df.set_index('UNMH_Cost_Center')['UD_Email'].to_dict()
 #alias_df = master_alias[['UNMH_Cost_Center', 'NDNQI_Reporting_Unit_Name']]
-unit_name_dict = alias_df.set_index('UNMH_Cost_Center')['NDNQI_Reporting_Unit_Name'].to_dict()
+unit_name_dict = alias_df.set_index('UNMH_Cost_Center')['NCI_Standard_Name'].to_dict()
 
 global unit_name
 olMailItem = 0x0
 obj = win32com.client.Dispatch("Outlook.Application")
 
 if send_email == True:
-    print('Fire in the hole! \nThere goes your kazillion emails!')
+    print('Fire in the hole! \nThere goes your kazillion emails!  \n\nWell, the good news is that I\'ve included a copy of \
+    certSummary YYYY-MM and eduSummary YYYY-MM in the RN Education and Data Reporting folders.  Since we\'ve saved so \
+    much time together, now we have time for a fun fact:  A blue whale\'s heart is the size of a VW Beetle, and beats 5 \
+    times a miniute - even slower when they are on a really deep dive!  Have a great day and remember - You Nailed It!')
     x = 0
     #alias list is a list of all cost centers from MasterAliasRecord
     for line in cost_center_list:
@@ -294,7 +297,7 @@ if send_email == True:
         cert_table = cert_totals.to_html()
 
         newMail = obj.CreateItem(olMailItem)
-        newMail.Subject = "FYI - NDNQI RN Education Data " + date_month + ' ' + unit_name + ' (' + line + ')'
+        newMail.Subject = "FYI - NDNQI RN Education Data " + date_month + ' ' + unit_name
         newMail.To = email
         newMail.Cc = 'NDNQI@salud.unm.edu'
 
@@ -392,7 +395,7 @@ if display_email == True:
         cert_table = cert_totals.to_html()
 
         newMail = obj.CreateItem(olMailItem)
-        newMail.Subject = "FYI - NDNQI RN Education Data " + date_month + ' ' + unit_name + ' (' + line + ')'
+        newMail.Subject = "FYI - NDNQI RN Education Data " + date_month + ' ' + unit_name 
         newMail.To = email
         newMail.Cc = 'NDNQI@salud.unm.edu'
 
@@ -450,6 +453,8 @@ if display_email == True:
         newMail.HTMLBody = html
         newMail.Display()
         x = x + 1
-
+    print('Well here you go, just a little taste of what I\'m capable of... oh, and by the way I stashed your \
+    eduSummary and certSummary data in the RN Education and Data reporting folders.  Now have fun checking those \
+    beautiful emails I drafted for you.  And can I just say, You Really Nailed it Today Buddy!')
 
    
