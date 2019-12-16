@@ -256,9 +256,9 @@ obj = win32com.client.Dispatch("Outlook.Application")
 
 if send_email == True:
     print('Fire in the hole! \nThere goes your kazillion emails!  \n\nWell, the good news is that I\'ve included a copy of \
-    certSummary YYYY-MM and eduSummary YYYY-MM in the RN Education and Data Reporting folders.  Since we\'ve saved so \
-    much time together, now we have time for a fun fact:  A blue whale\'s heart is the size of a VW Beetle, and beats 5 \
-    times a miniute - even slower when they are on a really deep dive!  Have a great day and remember - You Nailed It!')
+certSummary YYYY-MM and eduSummary YYYY-MM in the RN Education and Data Reporting folders.  Since we\'ve saved so \
+much time together, now we have time for a fun fact:  A blue whale\'s heart is the size of a VW Beetle, and beats 5 \
+times a miniute - even slower when they are on a really deep dive!  Have a great day and remember - You Nailed It!')
     x = 0
     #alias list is a list of all cost centers from MasterAliasRecord
     for line in cost_center_list:
@@ -454,7 +454,7 @@ if display_email == True:
         newMail.Display()
         x = x + 1
     print('Well here you go, just a little taste of what I\'m capable of... oh, and by the way I stashed your \
-    eduSummary and certSummary data in the RN Education and Data reporting folders.  Now have fun checking those \
-    beautiful emails I drafted for you.  And can I just say, You Really Nailed it Today Buddy!')
+eduSummary and certSummary data in the RN Education and Data reporting folders.  Now have fun checking those \
+beautiful emails I drafted for you.  And can I just say, You Really Nailed it Today Buddy!')
 
    
