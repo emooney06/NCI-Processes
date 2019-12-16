@@ -1,0 +1,363 @@
+
+
+#reduce the columns to only data that is needed for education
+#edu_df = complete_df[['NDNQI_Reporting_Unit_Name', 'Name', 'Degree']]
+#pivot the data to make the columns each level of education
+#edu_pivot = edu_df.pivot_table(edu_df, index='NDNQI_Reporting_Unit_Name', columns=['Degree'], aggfunc='count')
+#creating data entry dataframe for certs
+#cert_df = complete_df[['NDNQI_Reporting_Unit_Name','Name', 'Certification']]
+#cert_pivot = cert_df.pivot_table(cert_df, index='NDNQI_Reporting_Unit_Name', columns=['Certification'], aggfunc='count')
+#cert_pivot = cert_pivot.fillna(0)
+#edu_pivot = edu_pivot.fillna(0)
+
+
+
+
+def getQtrStr(month_string):
+
+
+    if (
+        monthStr == 'Jan'
+        or monthStr == 'JAN'
+        or monthStr == 'jan'
+        or monthStr == 'jAN'
+        or monthStr == 'January'
+        or monthStr == 'january'
+        or monthStr == 'JANUARY'
+        or monthStr == 'jANUARY'
+        or monthStr == '01'
+        or monthStr == '1'
+        ): 
+        qtrStr = '1'
+    elif (
+        monthStr == 'Feb'
+        or monthStr == 'FEB'
+        or monthStr == 'feb'
+        or monthStr == 'fEB'
+        or monthStr == 'February'
+        or monthStr == 'february'
+        or monthStr == 'FEBRUARY'
+        or monthStr == 'fEBRUARY'
+        or monthStr == '02'
+        or monthStr == '2'
+        ):
+        qtrStr = '1'
+    elif (
+        monthStr == 'Mar'
+        or monthStr == 'MAR'
+        or monthStr == 'mar'
+        or monthStr == 'mAR'
+        or monthStr == 'March'
+        or monthStr == 'march'
+        or monthStr == 'MARCH'
+        or monthStr == 'mARCH'
+        or monthStr == '03'
+        or monthStr == '3'
+        ):
+        qtrStr = '1'
+    elif (
+        monthStr == 'Apr'
+        or monthStr == 'APR'
+        or monthStr == 'apr'
+        or monthStr == 'aPR'
+        or monthStr == 'April'
+        or monthStr == 'april'
+        or monthStr == 'APRIL'
+        or monthStr == 'aPRIL'
+        or monthStr == '04'
+        or monthStr == '4'
+        ):
+        qtrStr = '2'
+    elif (
+        monthStr == 'May'
+        or monthStr == 'MAY'
+        or monthStr == 'may'
+        or monthStr == 'mAY'
+        or monthStr == '05'
+        or monthStr == '5'
+        ):
+        qtrStr = '2'
+    elif (
+        monthStr == 'Jun'
+        or monthStr == 'JUN'
+        or monthStr == 'jun'
+        or monthStr == 'jUN'
+        or monthStr == 'June'
+        or monthStr == 'june'
+        or monthStr == 'JUNE'
+        or monthStr == 'jUNE'
+        or monthStr == '06'
+        or monthStr == '6'
+        ):
+        qtrStr = '2'
+    elif (
+        monthStr == 'Jul'
+        or monthStr == 'JUL'
+        or monthStr == 'jul'
+        or monthStr == 'jUL'
+        or monthStr == 'July'
+        or monthStr == 'july'
+        or monthStr == 'JULY'
+        or monthStr == 'jULY'
+        or monthStr == '07'
+        or monthStr == '7'
+        ):
+        qtrStr = '3'
+    elif (
+        monthStr == 'Aug'
+        or monthStr == 'AUG'
+        or monthStr == 'aug'
+        or monthStr == 'aUG'
+        or monthStr == 'August'
+        or monthStr == 'august'
+        or monthStr == 'AUGUST'
+        or monthStr == 'aUGUST'
+        or monthStr == '08'
+        or monthStr == '8'
+        ):
+        qtrStr = '3'
+    elif (
+        monthStr == 'Sep'
+        or monthStr == 'SEP'
+        or monthStr == 'sep'
+        or monthStr == 'sEP'
+        or monthStr == 'September'
+        or monthStr == 'september'
+        or monthStr == 'SEPTEMBER'
+        or monthStr == 'sEPTEMBER'
+        or monthStr == '09'
+        or monthStr == '9'
+        ):
+        qtrStr = '3'
+    elif (
+        monthStr == 'Oct'
+        or monthStr == 'OCT'
+        or monthStr == 'oct'
+        or monthStr == 'oCT'
+        or monthStr == 'October'
+        or monthStr == 'october'
+        or monthStr == 'OCTOBER'
+        or monthStr == 'oCTOBER'
+        or monthStr == '10'
+        ):
+        qtrStr = '4'
+    elif (
+        monthStr == 'Nov'
+        or monthStr == 'NOV'
+        or monthStr == 'nov'
+        or monthStr == 'nOV'
+        or monthStr == 'November'
+        or monthStr == 'november'
+        or monthStr == 'NOVEMBER'
+        or monthStr == 'nOVEMBER'
+        or monthStr == '11'
+        ):
+        qtrStr = '4'
+    elif (
+        monthStr == 'Dec'
+        or monthStr == 'DEC'
+        or monthStr == 'dec'
+        or monthStr == 'dEC'
+        or monthStr == 'December'
+        or monthStr == 'december'
+        or monthStr == 'DECEMBER'
+        or monthStr == 'dECEMBER'
+        or monthStr == '12'
+        ):
+        qtrStr = '4'
+    
+    return qtrStr;
+# this function returns the 2-digit string of numbers for each month (useful in filepaths)
+def getMonthNumStr(month_string):
+     if (
+        monthStr == 'Jan'
+        or monthStr == 'JAN'
+        or monthStr == 'jan'
+        or monthStr == 'jAN'
+        or monthStr == 'January'
+        or monthStr == 'january'
+        or monthStr == 'JANUARY'
+        or monthStr == 'jANUARY'
+        or monthStr == '01'
+        or monthStr == '1'
+        ): 
+        monthNumStr = '01'
+     elif (
+        monthStr == 'Feb'
+        or monthStr == 'FEB'
+        or monthStr == 'feb'
+        or monthStr == 'fEB'
+        or monthStr == 'February'
+        or monthStr == 'february'
+        or monthStr == 'FEBRUARY'
+        or monthStr == 'fEBRUARY'
+        or monthStr == '02'
+        or monthStr == '2'
+        ):
+        monthNumStr = '02'
+     elif (
+        monthStr == 'Mar'
+        or monthStr == 'MAR'
+        or monthStr == 'mar'
+        or monthStr == 'mAR'
+        or monthStr == 'March'
+        or monthStr == 'march'
+        or monthStr == 'MARCH'
+        or monthStr == 'mARCH'
+        or monthStr == '03'
+        or monthStr == '3'
+        ):
+        monthNumStr = '03'
+     elif (
+        monthStr == 'Apr'
+        or monthStr == 'APR'
+        or monthStr == 'apr'
+        or monthStr == 'aPR'
+        or monthStr == 'April'
+        or monthStr == 'april'
+        or monthStr == 'APRIL'
+        or monthStr == 'aPRIL'
+        or monthStr == '04'
+        or monthStr == '4'
+        ):
+        monthNumStr = '04'
+     elif (
+        monthStr == 'May'
+        or monthStr == 'MAY'
+        or monthStr == 'may'
+        or monthStr == 'mAY'
+        or monthStr == '05'
+        or monthStr == '5'
+        ):
+        monthNumStr = '05'
+     elif (
+        monthStr == 'Jun'
+        or monthStr == 'JUN'
+        or monthStr == 'jun'
+        or monthStr == 'jUN'
+        or monthStr == 'June'
+        or monthStr == 'june'
+        or monthStr == 'JUNE'
+        or monthStr == 'jUNE'
+        or monthStr == '06'
+        or monthStr == '6'
+        ):
+        monthNumStr = '06'
+     elif (
+        monthStr == 'Jul'
+        or monthStr == 'JUL'
+        or monthStr == 'jul'
+        or monthStr == 'jUL'
+        or monthStr == 'July'
+        or monthStr == 'july'
+        or monthStr == 'JULY'
+        or monthStr == 'jULY'
+        or monthStr == '07'
+        or monthStr == '7'
+        ):
+        monthNumStr = '07'
+     elif (
+        monthStr == 'Aug'
+        or monthStr == 'AUG'
+        or monthStr == 'aug'
+        or monthStr == 'aUG'
+        or monthStr == 'August'
+        or monthStr == 'august'
+        or monthStr == 'AUGUST'
+        or monthStr == 'aUGUST'
+        or monthStr == '08'
+        or monthStr == '8'
+        ):
+        monthNumStr = '08'
+     elif (
+        monthStr == 'Sep'
+        or monthStr == 'SEP'
+        or monthStr == 'sep'
+        or monthStr == 'sEP'
+        or monthStr == 'September'
+        or monthStr == 'september'
+        or monthStr == 'SEPTEMBER'
+        or monthStr == 'sEPTEMBER'
+        or monthStr == '09'
+        or monthStr == '9'
+        ):
+        monthNumStr = '09'
+     elif (
+        monthStr == 'Oct'
+        or monthStr == 'OCT'
+        or monthStr == 'oct'
+        or monthStr == 'oCT'
+        or monthStr == 'October'
+        or monthStr == 'october'
+        or monthStr == 'OCTOBER'
+        or monthStr == 'oCTOBER'
+        or monthStr == '10'
+        ):
+        monthNumStr = '10'
+     elif (
+        monthStr == 'Nov'
+        or monthStr == 'NOV'
+        or monthStr == 'nov'
+        or monthStr == 'nOV'
+        or monthStr == 'November'
+        or monthStr == 'november'
+        or monthStr == 'NOVEMBER'
+        or monthStr == 'nOVEMBER'
+        or monthStr == '11'
+        ):
+        monthNumStr = '11'
+     elif (
+        monthStr == 'Dec'
+        or monthStr == 'DEC'
+        or monthStr == 'dec'
+        or monthStr == 'dEC'
+        or monthStr == 'December'
+        or monthStr == 'december'
+        or monthStr == 'DECEMBER'
+        or monthStr == 'dECEMBER'
+        or monthStr == '12'
+        ):
+        monthNumStr = '12'
+    
+     return monthNumStr;
+
+def getNumDaysInMonth(month_numStr):
+    if (month_numStr == '02'):
+        numDays = 28
+    elif (
+        month_numStr == '04'
+        or month_numStr == '06'
+        or month_numStr == '09'
+        or month_numStr == '11'
+        ):
+        numDays = 30
+    else:
+        numDays = 31
+
+    return numDays;
+
+def checkAnswer(myAnswer):
+    if (
+        myAnswer == 'y' 
+        or myAnswer == 'Y'
+        or myAnswer == 'yes'
+        or myAnswer == 'Yes'
+        or myAnswer == 'YES'
+        or myAnswer == 'YE'
+        or myAnswer == 'Ye'
+        or myAnswer == 'ye'
+        or myAnswer == 'yES'
+        ):
+        myBool = True
+    elif (
+        myAnswer == 'N'
+        or myAnswer == 'n'
+        or myAnswer == 'no'
+        or myAnswer == 'No'
+        or myAnswer == 'NO'
+        or myAnswer == 'nO'):
+        myBool = False
+    else:
+        print('I don\'t understand your answer; please close this window, try again, and input a normal response next time newbie!')
+        quit()
+    return myBool;
