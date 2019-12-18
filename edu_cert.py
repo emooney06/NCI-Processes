@@ -26,6 +26,7 @@ Author:  Ethan Mooney
 Details:  This module takes input 
 '''
 
+display_email = False
 max_pd_display()
 fileVars = FileDateVars.from_inputs()
 email_input = str(input('''Are you ready to send all the education emails to each Director?  Please know this is a \
@@ -36,8 +37,9 @@ if email_input == False:
     display_email = str(input('''Would you like to display the first 10 emails as a test set - this will not 
     send emails, only display them in an outlook window.  \n Please input \'yes\' or \'no\', or type \'
     exit()\' to quit.'''))
+    display_email = check_answer(display_email)
 
-display_email = check_answer(display_email)
+
 
 #def build_file_paths():
 # Real path:  master_alias_path = Path('J:/NDNQI/MasterAliasRecord.xlsx')
