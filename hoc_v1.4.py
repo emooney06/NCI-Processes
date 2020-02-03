@@ -27,12 +27,12 @@ monNumStr = getMonthNumStr(monthStr)
 daysInMonth = getNumDaysInMonth(monNumStr)
 
 # initialize the file paths
-laborLevelsPDFPath = os.path.join('J:\\', 'NDNQI', 'SourceData', 'Hours Of Care', yearStr + 'Q' + qtrStr, 'Labor Levels ' + yearStr + '-' + monNumStr + '.pdf')
-supportFilePath = os.path.join('J:\\', 'NDNQI', 'SourceData', 'Hours Of Care', 'hocSupportFile.xlsx')
-checkLaborLevelsPath = os.path.join('J:\\', 'NDNQI', 'SourceData', 'Hours Of Care', yearStr + 'Q' + qtrStr, 'checkLaborLevels ' + yearStr + '-' + monNumStr + '.xlsx')
-rawDataPath = os.path.join('J:\\', 'NDNQI', 'SourceData', 'Hours Of Care', yearStr + 'Q' + qtrStr, 'StaffRaw ' + yearStr + '-' + monNumStr + '.xls')
-tmpTxtPath = os.path.join('J:\\', 'NDNQI', 'ndnqi_python', 'TmpFiles_DoNotDelete', 'tmpTxt.txt')
-tmpCSVPath = os.path.join('J:\\', 'NDNQI', 'ndnqi_python', 'TmpFiles_DoNotDelete', 'pdfToCSV.csv')
+laborLevelsPDFPath = os.path.join('K:\\', 'NDNQI', 'SourceData', 'Hours Of Care', yearStr + 'Q' + qtrStr, 'Labor Levels ' + yearStr + '-' + monNumStr + '.pdf')
+supportFilePath = os.path.join('K:\\', 'NDNQI', 'SourceData', 'Hours Of Care', 'hocSupportFile.xlsx')
+checkLaborLevelsPath = os.path.join('K:\\', 'NDNQI', 'SourceData', 'Hours Of Care', yearStr + 'Q' + qtrStr, 'checkLaborLevels ' + yearStr + '-' + monNumStr + '.xlsx')
+rawDataPath = os.path.join('K:\\', 'NDNQI', 'SourceData', 'Hours Of Care', yearStr + 'Q' + qtrStr, 'StaffRaw ' + yearStr + '-' + monNumStr + '.xls')
+tmpTxtPath = os.path.join('K:\\', 'NDNQI', 'ndnqi_python', 'TmpFiles_DoNotDelete', 'tmpTxt.txt')
+tmpCSVPath = os.path.join('K:\\', 'NDNQI', 'ndnqi_python', 'TmpFiles_DoNotDelete', 'pdfToCSV.csv')
 print('\n Please be patient, sometimes the Tika server takes a nap and says she \'can\'t see the lame startup log message...\'\n I might have to wake her up... \n')
 # use tika parser to read the pdf file
 laborLevels = parser.from_file(laborLevelsPDFPath)
@@ -83,8 +83,8 @@ combinedData = combinedData[combinedData.labor_code != '8888']
 # write file to check that all labor levels have an associated type 
 combinedData.to_excel(checkLaborLevelsPath)
 # establish the file paths
-contractDataPath = os.path.join('J:\\', 'NDNQI', 'SourceData', 'Hours Of Care', yearStr + 'Q' + qtrStr, 'contractRaw ' + yearStr + '-' + monNumStr + '.xls')
-contractNonContractCombinedPath =  os.path.join('J:\\', 'NDNQI', 'SourceData', 'Hours Of Care', yearStr + 'Q' + qtrStr, 'ContracNonContractCombined ' + yearStr + '-' + monNumStr + '.xlsx')
+contractDataPath = os.path.join('K:\\', 'NDNQI', 'SourceData', 'Hours Of Care', yearStr + 'Q' + qtrStr, 'contractRaw ' + yearStr + '-' + monNumStr + '.xls')
+contractNonContractCombinedPath =  os.path.join('K:\\', 'NDNQI', 'SourceData', 'Hours Of Care', yearStr + 'Q' + qtrStr, 'ContracNonContractCombined ' + yearStr + '-' + monNumStr + '.xlsx')
 # put the contract data into a dataframe
 pd_contractData = pd.read_excel(contractDataPath)
 # reduce the dataframe to only ne needed columns:  name, account and Hours
@@ -100,7 +100,7 @@ pd_contractMatrix = pd.read_excel(supportFilePath, 'ContractNames')
 # merge the contract matrix with the contract data on Name so the data contains the work type from the matrix
 combinedContractData = reduce(lambda x,y: pd.merge(x,y, on='Name', how='left'), [pd_contractData, pd_contractMatrix])
 # create path for file to check that all contract names are associated with a work type in contract matrix
-checkContractNamesPath = os.path.join('J:\\', 'NDNQI', 'SourceData', 'Hours Of Care', yearStr + 'Q' + qtrStr, 'checkContractNames ' + yearStr + '-' + monNumStr + '.xlsx')
+checkContractNamesPath = os.path.join('K:\\', 'NDNQI', 'SourceData', 'Hours Of Care', yearStr + 'Q' + qtrStr, 'checkContractNames ' + yearStr + '-' + monNumStr + '.xlsx')
 # write to the file to check that all contractor names are in contract matrix
 combinedContractData.to_excel(checkContractNamesPath)
 if checkedMatrix == True:
@@ -113,7 +113,7 @@ if checkedMatrix == True:
     # write the contract and non contract complete file to excel
     contractNonContractCombined.to_excel(contractNonContractCombinedPath)
     # establish the path of masterAliasRecord
-    masterAliasPath = os.path.join('J:\\', 'NDNQI', 'masterAliasRecord.xlsx')
+    masterAliasPath = os.path.join('K:\\', 'NDNQI', 'masterAliasRecord.xlsx')
     # load masterAlias to a dataframe
     masterAlias = pd.read_excel(masterAliasPath, 'MainAlias')
     # reduce masterAlias to only the needed columns
@@ -149,7 +149,7 @@ if checkedMatrix == True:
     # which resulted in a negative number of UAP hours
     pivotData['UAP'] = pivotData['UAP'].apply(lambda x: max(x, 0))
     # establish the path for the final product of the pivot table
-    pivotDataPath =  os.path.join('J:\\', 'NDNQI', 'SourceData', 'Hours Of Care', yearStr + 'Q' + qtrStr, 'HOC_Final ' + yearStr + '-' + monNumStr + '.xlsx')
+    pivotDataPath =  os.path.join('K:\\', 'NDNQI', 'SourceData', 'Hours Of Care', yearStr + 'Q' + qtrStr, 'HOC_Final ' + yearStr + '-' + monNumStr + '.xlsx')
     # merge pivot data with masterAlias to add back the NDNQI Unit ID
     pivotData = reduce(lambda x,y: pd.merge(x,y, on='UNMH_Cost_Center', how='left'), [pivotData, masterAlias])
     # set NDNQI Unit ID to be the index so the dataframe can be combined and summed on that value

@@ -42,15 +42,15 @@ if email_input == False:
 
 
 #def build_file_paths():
-# Real path:  master_alias_path = Path('J:/NDNQI/MasterAliasRecord.xlsx')
+# Real path:  master_alias_path = Path('K:/NDNQI/MasterAliasRecord.xlsx')
 #testing path
 #master_alias_path = Path('C:/Users/ejmooney/Desktop/testData/MasterAlias_test.xlsx')
-edu_job_codes_path = Path('J:/NDNQI/jobCodesMasterList.xlsm')
-edu_path = Path('J:/NDNQI/SourceData/RN Education')
-hr_path = Path('J:/NDNQI/SourceData/Nurse Turnover/HR Turnover Reports')
-edu_path = Path('J:/NDNQI/SourceData/RN Education')
+edu_job_codes_path = Path('K:/NDNQI/jobCodesMasterList.xlsm')
+edu_path = Path('K:/NDNQI/SourceData/RN Education')
+hr_path = Path('K:/NDNQI/SourceData/Nurse Turnover/HR Turnover Reports')
+edu_path = Path('K:/NDNQI/SourceData/RN Education')
 duplicates_path = Path('C:/Users/ejmooney/Desktop/testData/duplicates.xlsx')
-reporting_path = Path('J:/NDNQI/Data Reporting/RN Education')
+reporting_path = Path('K:/NDNQI/Data Reporting/RN Education')
 
 #define the folder named by year and quarter (ie 2019Q2)
 folder_year_qtr = fileVars.year_str + 'Q' + fileVars.qtr_str 

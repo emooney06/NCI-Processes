@@ -1,22 +1,31 @@
-import win32com.client
-olMailItem = 0x0
-obj = win32com.client.Dispatch("Outlook.Application")
-newMail = obj.CreateItem(olMailItem)
-newMail.Subject = "I AM SUBJECT!!"
-newMail.Body = "I AM IN THE BODY\nSO AM I!!!"
-newMail.To = "ejmooney@salud.unm.edu"
-#newMail.CC = "moreaddresses here"
-#newMail.BCC = "address"
-#attachment1 = "Path to attachment no. 1"
-#attachment2 = "Path to attachment no. 2"
-#newMail.Attachments.Add(attachment1)
-#newMail.Attachments.Add(attachment2)
-newMail.display()
-newMail.Send()
-
 import pandas as pd
+from pathlib import Path
+from functools import reduce
 
-df = pd.DataFrame({'test1': 12340.0, 'test2':12345.0}, [0])
-num = 12340.0
-df['test1'] = df['test1'].astype(str)
-df['test1'] = df['test1'].str[:5]
+pd.option_context('display.max_rows', None, 'display.max_columns', None)  # more options can be specified also
+pd.options.display.max_colwidth = 199
+pd.options.display.max_columns = 1000
+pd.options.display.width = 1000
+pd.options.display.precision = 2  # set as needed
+
+tc_path = Path('C:/Users/ejmooney/Desktop/testData/tc_users.xlsx')
+hr_path = Path('C:/Users/ejmooney/Desktop/testData/hr_report.xlsx')
+alias_path = Path('C:/Users/ejmooney/Desktop/testData/alias_report.xlsx')
+
+hr = pd.read_excel(hr_path)
+tc = pd.read_excel(tc_path)
+alias = pd.read_excel(alias_path)
+
+alias['USERNAME'] = alias['USERNAME'].str.lower()
+
+hr = hr.rename(columns={'EE ID': 'ALIAS'})
+
+combinedData = reduce(lambda x,y: pd.merge(x,y, on='ALIAS', how='left'), [hr, alias])
+
+tc = tc.rename(columns={'username':'USERNAME'})
+
+combinedData = reduce(lambda x,y: pd.merge(x,y, on='USERNAME', how='left'), [combinedData, tc])
+
+write_path = Path('C:/Users/ejmooney/Desktop/testData/combined_tc_hr_alias.xlsx')
+
+combinedData.to_excel(write_path)
