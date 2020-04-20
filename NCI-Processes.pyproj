@@ -28,6 +28,9 @@
     <Compile Include="micu_drsng_changes.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="test_email.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="my_classes.py" />
     <Compile Include="my_functions.py" />
     <Compile Include="my_variables.py" />
