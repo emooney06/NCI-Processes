@@ -6,7 +6,6 @@ import numpy as np
 import collections
 import re
 from datetime import datetime
-import sys
 import smtplib,ssl
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
