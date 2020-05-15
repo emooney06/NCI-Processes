@@ -31,6 +31,7 @@
     <Compile Include="covid_screen.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="sandbox2.py" />
     <Compile Include="sandbox.py">
       <SubType>Code</SubType>
     </Compile>
