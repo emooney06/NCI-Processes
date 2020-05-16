@@ -11,8 +11,8 @@ import sys
 
  
 # you == recipient's email address
-me = 'UNMH-Official-Communications@salud.unm.edu'
-you = 'cdroberts@salud.unm.edu'
+me = 'dev.mmooney.ethan.com'
+you = 'ejmooney@salud.unm.edu'
 
 # Create message container - the correct MIME type is multipart/alternative.
 msg = MIMEMultipart('alternative')
@@ -35,13 +35,18 @@ part2 = MIMEText(html, 'html')
 
 # Attach parts into message container.
 # According to RFC 2046, the last part of a multipart message, in this case
-# the HTML message, is best and preferred.
+# the HTML message, is best and preferred
 #msg.attach(part1)
 msg.attach(part2)
 
 # Send the message via local SMTP server.
-s = smtplib.SMTP('HSCLink.health.unm.edu')
+#server = smtplib.SMTP('64.233.184.108')
+server = smtplib.SMTP('smtp.google.com', 587)
+server.ehlo()
+server.starttls
+server.ehlo()
+server.login('dev.mooney.ethan', 'Monique81')
 # sendmail function takes 3 arguments: sender's address, recipient's address
 # and message to send - here it is sent as one string.
-s.sendmail(me, you, msg.as_string())
+server.sendmail(me, you, msg.as_string())
 s.quit()
