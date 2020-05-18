@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{e24a26cf-b35e-4227-9590-1b48572e09a3}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>sandbox2.py</StartupFile>
+    <StartupFile>rule_check.py</StartupFile>
     <SearchPath />
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -31,7 +31,7 @@
     <Compile Include="covid_screen.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="sandbox2.py" />
+    <Compile Include="rule_check.py" />
     <Compile Include="sandbox.py">
       <SubType>Code</SubType>
     </Compile>

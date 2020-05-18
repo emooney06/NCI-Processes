@@ -1,3 +1,13 @@
+############################################################################################################################
+# Title: Rule Check
+# Date:  2020-05-18
+# Author:  Ethan Mooney
+# Description:  This is a simple function that sends an email with attachment containing a timestamp.  An outlook rule 
+# called "Rule Check" saves the attachment to a specified file.  The file is then read by this function to verify the rule 
+# is running.  If execution of the rule takes greater than 120 seconds, an email alert is sent.  This process is repeated
+#  every 30 minues.   
+############################################################################################################################
+
 import pandas as pd
 import os
 from functools import reduce

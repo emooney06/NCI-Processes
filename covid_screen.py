@@ -1,3 +1,13 @@
+############################################################################################################################
+# Title: COVID-19 Risk Alert
+# Date:  2020-05-18
+# Author:  Ethan Mooney
+# Description:  This function looks for a file that should be safed by the outlook rule "8940 Save and Move" running on the
+# "server box".  If no file is found, it will repeat in 30 min.  If the file is found it processes it using a number of 
+# filters, then generates unit-specific emails to notify unit directors of patients who are identified as potential 
+# COVID-19 risks.  These are generallyt patients who have fallen throught the cracks for testing and/or screening.  
+############################################################################################################################
+
 import pandas as pd
 import os
 from functools import reduce
@@ -76,20 +86,19 @@ while True:
 
         pos_scrn_not_neg_test_df3 = pos_scrn_not_neg_test_df[(pos_scrn_not_neg_test_df['outside_result'] != 'Yes')] 
 
+        ##################################################################################################################################################
+        #This section can easily be modified to generate a file of fins that have been reported already.  This could feasibly be modified to enact limits 
+        #on reporting such as report each patient only 2 times in each unit.  This would be necessary if we moved closer to a real-time reporting model.
+        ###################################################################################################################################################
         #pos_scrn_not_neg_test_df['loc_fin'] = pos_scrn_not_neg_test_df['Financial Number'].astype(str) + '_' + pos_scrn_not_neg_test_df['location']
-
         #prev_reported_df = pd.read_excel(data_path / 'reported_fins.xlsx')
         #prev_reported_list = prev_reported_df['loc_fin'].to_list()
-
-
         #pos_scrn_not_neg_test_df = pos_scrn_not_neg_test_df[~pos_scrn_not_neg_test_df.loc_fin.isin(prev_reported_list)]
-
-
         #reported_df = pos_scrn_not_neg_test_df[['Financial Number', 'location']]
         #reported_df['loc_fin'] = reported_df['Financial Number'].astype(str) + '_' + reported_df['location']
         #prev_reported_df = prev_reported_df.append(reported_df, sort=True)
         #prev_reported_df.to_excel(data_path / 'reported_fins.xlsx', index=False)
-
+        ##################################################################################################################################################
 
         #get rid of the NaN values (null values) and replace with "no results found string"
         pos_scrn_not_neg_test_df['careset_order'] = pos_scrn_not_neg_test_df.careset_order.replace(np.nan, 'no results found', regex=True)
@@ -105,15 +114,14 @@ while True:
         pos_scrn_not_neg_test_df['careset_order_dt_tm'] = pos_scrn_not_neg_test_df.careset_order_dt_tm.astype(object).where(pos_scrn_not_neg_test_df.careset_order_dt_tm.notnull(), 'no results found')
         pos_scrn_not_neg_test_df['testing_dt_tm'] = pos_scrn_not_neg_test_df.testing_dt_tm.astype(object).where(pos_scrn_not_neg_test_df.testing_dt_tm.notnull(), 'no results found')
         pos_scrn_not_neg_test_df['screen_dt_tm'] = pos_scrn_not_neg_test_df.screen_dt_tm.astype(object).where(pos_scrn_not_neg_test_df.screen_dt_tm.notnull(), 'no results found')
-
+        #remove the columns that are not needed
         pos_scrn_not_neg_test_df = pos_scrn_not_neg_test_df[['MRN- Organization', 'location', 'admit_dt_tm', 'location_room', 'location_bed', 'careset_order', 'careset_order_dt_tm',
         'testing_result', 'testing_dt_tm', 'exposure_result', 'symptoms_result', 'screen_dt_tm', 'outside_result', 'outside_result_dt_tm', 'admt_scrn_diff', 'admt_test_diff', 'report_time']]
-
+        #change the column names to be more human-readable
         pos_scrn_not_neg_test_df = pos_scrn_not_neg_test_df.rename(columns={"MRN- Organization": "MRN", "admit_dt_tm": "Admit Date", "location_room": "Room", "location_bed": "Bed", "careset_order": "Order", 
                                                  "careset_order_dt_tm": "Order Date", "testing_result": "Test Result","testing_dt_tm": "Test Date", "exposure_result": "Exposure", "symptoms_result": "Symptoms", 
                                                  "screen_dt_tm": "Screen Date", "outside_result": "OSH Result", "outside_result_dt_tm": "OSH Result Date", "admt_scrn_diff": "Admit-Screen Hrs",
                                                  "admt_test_diff": "Admit-Test Hrs", "report_time": "Report Time"})
-  
         #Note*** this is a copy of the Master Alias because normally reported units like CTH inpatient and Peds PACU are under ICU directors
         ma_df = pd.read_excel(data_path / 'ma_copy.xlsx')
         #limit the data set to only the columns needed
@@ -129,24 +137,30 @@ while True:
 
         #delete the original file to prevent re-running the script on an outdated file if the process to drop the file in a folder errors
         os.remove(data_path / file_name)
-
+        #reate the mail object
         olMailItem = 0x0
+        #create an object to interact with the outlook application
         obj = win32com.client.Dispatch("Outlook.Application")
+        #generate a global object to be accessible across functions  - I don't think this is necessary any longer... not sure why I defined it global
         global unit_table
-
+        #loop through each location in the list of locations
         for location in location_list:
+            #try to get the email address            
             try:
-                #cost_center = str(cost_center)
                 # initialize variable that is email address which is a found from the email dictionary object
                 email = email_dict.get(location)
+                #if there is no email associated with the unit, print an error - this should not happen
                 if email == None:
                     email = 'no email found for this unit: ' + location
             except KeyError:
                 # If there is no UD Email associated with that cost center, just print it to console
                 print('There is no email address for: ') 
                 print(email)
+            #filter the dataframe of non-negative screens with non-negative test results by unit location
             unit_df = pos_scrn_not_neg_test_df[(pos_scrn_not_neg_test_df['location']) == location]
+            #convert it to a dataframe to embed in email
             unit_table = unit_df.to_html(index=False)
+            #generate the email with all the parts
             newMail = obj.CreateItem(olMailItem)
             newMail.Subject = 'FYI - Possible COVID-19 Risk *Secure*'
             newMail.To = email
@@ -158,17 +172,11 @@ while True:
                     Hello Unit Director,<br><br> This is an automated message from your Nursing 
                     Clinical Informatics team.  This message is for your information only - no response is needed.  
                     <br><br>
-                    Below you will find a patient identified by our algorithm as a potential COVID-19 exposure risk.  This process is 
-                    intended to identify patients who have not been screened and/or have not yet been tested for COVID-19. 
+                    Below you will find patients identified by our algorithm as a potential COVID-19 exposure risk because they have not screened negative
+                    and do not yet have current COVID-19 test results. 
                     <br><br>
-                    Please be advised: <br>
-                    While we have employed a new analytic process to minimize the volume of non-actionable notifications, we fully 
-                    anticipate there will be some rate of error in our process and we do not intend for this to replace a clinician review 
-                    of the medical record.  Please consider this notice a "heads-up" that you may want to look into the 
-                    records listed below for appropriate testing and screening, and we will continue to fine tune our algorithm.
-                    <br><br>
-                    If you find a patient needs COVID-19 Testing, you may inform the provider that testing can be found in the "COVID-19 Test 
-                    careset.  If you find a patient should be screened, the screening can be found in the ad-hoc form titled "Infectious Disease 
+                    If you find a patient who needs COVID-19 Testing, you may inform their provider that testing can be ordered via the "COVID-19 Test 
+                    careset".  If you find a patient who should be screened, the screening can be found in the ad-hoc form titled "Infectious Disease 
                     Travel Screening".  
                     <br><br>
                     As always, we welcome any questions or feedback. <br><br>
@@ -198,21 +206,31 @@ while True:
             #add the parts of the mail message
             html = greeting + unit_table + disclaimer
             newMail.HTMLBody = html
+            #################################################################
+            # to implement this in production, change .Display to .Send
+            #################################################################
             newMail.Display()
-            #sleep for 24 hours
+            #generate a timestamp to write to a file in my google drive.  - the file is checked by my raspbery pi to ensure this function is still online
             timestr = time.strftime("%Y%m%d-%H%M")
+            #access the file by the id
             file1 = drive.CreateFile({'id': '1U362h3YgTplBN6uNIWXQV9dq4i0Z7VrY'})
+            #load the string as content to write
             file1.SetContentString(timestr)
+            #write to the specified file
             file1.Upload() # Files.insert()
-        print('30 min sleep')
-        time.sleep(30)
+        print(str(timestr) + ' file found; emails sent and entering 30 min sleep')
+        time.sleep(1800)
     except:
+        #generate a timestamp to write to a file in my google drive.  - the file is checked by my raspbery pi to ensure this function is still online
         timestr = time.strftime("%Y%m%d-%H%M")
+        #access the file by the id
         file1 = drive.CreateFile({'id': '1U362h3YgTplBN6uNIWXQV9dq4i0Z7VrY'})
+        #load the string as content to write
         file1.SetContentString(timestr)
+        #write to the specified file
         file1.Upload() # Files.insert()
-        print('30 min sleep')
-        time.sleep(30)
+        print(str(timestr) + ' file not found; 30 min sleep')
+        time.sleep(1800)
     
 
 
