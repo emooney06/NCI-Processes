@@ -4,8 +4,8 @@
 # Author:  Ethan Mooney
 # Description:  This is a simple function that sends an email with attachment containing a timestamp.  An outlook rule 
 # called "Rule Check" saves the attachment to a specified file.  The file is then read by this function to verify the rule 
-# is running.  If execution of the rule takes greater than 120 seconds, an email alert is sent.  This process is repeated
-#  every 30 minues.   
+# is running.  If execution of the rule takes greater than N seconds, an email alert is sent.  This process is repeated
+#  every N minutes.   
 ############################################################################################################################
 
 import pandas as pd
@@ -69,8 +69,8 @@ successful completion of this rule_check does not necessarily mean that ALL rule
         nowstamp = datetime.strptime(nowstamp, '%Y%m%d-%H%M')
         #calculate the difference in the timestamp sent through the rule process and the now timestamp
         diff = ((nowstamp - timestamp).total_seconds())
-        # if the difference between the timestamps is greater than 120 seconds, there is likely a problem with the Outlook rule; so send an email
-        if diff > 120:
+        # if the difference between the timestamps is greater than 300 seconds 500, there is likely a problem with the rules; so send an email
+        if diff > 300:
             alertMail = obj.CreateItem(olMailItem)
             alertMail.Subject = 'Problem with Outlook Rules'
             alertMail.To = 'ejmooney@salud.unm.edu'
@@ -87,7 +87,7 @@ successful completion of this rule_check does not necessarily mean that ALL rule
         alertMail2 = obj.CreateItem(olMailItem)
         alertMail2.Subject = 'Problem with Outlook Rules'
         alertMail2.To = 'ejmooney@salud.unm.edu'
-        alertMail2.body = '''Your rule check process has triggered an except statement.  Please check your "server machine" to ensure Outlook and the python script is running correctly.'''
+        alertMail2.body = '''Your rule check process has triggered an except statement.  Please check your "server machine" to ensure your mail_rules are working correctly.'''
         alertMail2.Send()
         print(str(nowstamp) + ' exception triggered; sleeping for 1 hour')
         time.sleep(3600)
