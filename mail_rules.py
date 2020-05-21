@@ -18,6 +18,7 @@ since = UTC_NOW() - timedelta(hours=1)
 timestr = time.strftime("%Y%m%d-%H%M_")
 
 def save_attach(attach_name, path_to_save, name_to_save):
+    timestr = time.strftime("%Y%m%d-%H%M_")
     for item in a.inbox.all().filter(datetime_received__gt=since).order_by('-datetime_received'):
         for attachment in item.attachments:
             if isinstance(attachment, FileAttachment):
