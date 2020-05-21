@@ -38,8 +38,9 @@ max_pd_display()
 
 #define the file paths and file names0
 data_path = Path('//uh-nas/Groupshare3/ClinicalAdvisoryTeam/data_folders/8940_covid_screen')
+support_path = Path('//uh-nas/Groupshare3/ClinicalAdvisoryTeam/data_folders/support_files')
 archive_path = Path('//uh-nas/Groupshare3/ClinicalAdvisoryTeam/data_folders/8940_covid_screen/8940_archive')
-file_name = 'covid_screen.xlsx'
+file_name = '#8940 Covid Screen.xlsx'
 
 while True:
     try:
@@ -123,7 +124,7 @@ while True:
                                                  "screen_dt_tm": "Screen Date", "outside_result": "OSH Result", "outside_result_dt_tm": "OSH Result Date", "admt_scrn_diff": "Admit-Screen Hrs",
                                                  "admt_test_diff": "Admit-Test Hrs", "report_time": "Report Time"})
         #Note*** this is a copy of the Master Alias because normally reported units like CTH inpatient and Peds PACU are under ICU directors
-        ma_df = pd.read_excel(data_path / 'ma_copy.xlsx')
+        ma_df = pd.read_excel(support_path / 'ma_copy.xlsx')
         #limit the data set to only the columns needed
         ma_df = ma_df[['cerner_unit_name', 'UD_Email']]
         #drop na values from ma

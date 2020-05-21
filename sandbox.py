@@ -1,28 +1,19 @@
-from pydrive.auth import GoogleAuth
-from pydrive.drive import GoogleDrive
-from google import auth
-from oauth2client.client import GoogleCredentials
 import pandas as pd
-import time
+from pathlib import Path
+from functools import reduce
+from my_functions import max_pd_display
 
-#authorize the google drive access
-gauth = GoogleAuth()
-gauth.LocalWebserverAuth()
-drive = GoogleDrive(gauth)
+max_pd_display()
 
-timestr = time.strftime("%Y%m%d-%H%M")
-file1 = drive.CreateFile({'id': '1U362h3YgTplBN6uNIWXQV9dq4i0Z7VrY'})
-file1.SetContentString(timestr)
-file1.Upload() # Files.insert()
+data_path = Path('C:/Users/ejmooney/Desktop/testData/tap_rule_data3.xlsx')
 
-downloaded = drive.CreateFile({'id':"1U362h3YgTplBN6uNIWXQV9dq4i0Z7VrY"})   # replace the id with id of file you want to access
-content = downloaded.GetContentFile('Hello.csv')        # replace the file name with your file
+braden_df = pd.read_excel(data_path, 'Report 1')
+assist_df = pd.read_excel(data_path, 'Report 2')
+repos_df = pd.read_excel(data_path, 'Report 3')
 
-content = pd.read_csv('Hello.csv')
-content
+comb_data = reduce(lambda x,y: pd.merge(x,y, on='fin', how='left'), [braden_df, assist_df, repos_df])
 
+comb_data = comb_data.dropna()
 
-#timestr = time.strftime("%Y%m%d-%H%M")
-#file1 = drive.CreateFile({'title': 'Hello.csv'})
-#file1.SetContentString(timestr)
-#file1.Upload() # Files.insert()
+summary = comb_data.groupby('location').fin.nunique()
+summary

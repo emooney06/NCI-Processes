@@ -41,7 +41,10 @@
     <Compile Include="ni_NDNQI_upload.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="snadbox3.py">
+    <Compile Include="sandbox2.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="mail_rules.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="test_email.py">
