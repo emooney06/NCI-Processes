@@ -210,7 +210,7 @@ while True:
             #################################################################
             # to implement this in production, change .Display to .Send
             #################################################################
-            newMail.Display()
+            newMail.Send()
             #generate a timestamp to write to a file in my google drive.  - the file is checked by my raspbery pi to ensure this function is still online
             timestr = time.strftime("%Y%m%d-%H%M")
             #access the file by the id
