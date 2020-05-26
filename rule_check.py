@@ -55,8 +55,8 @@ successful completion of this rule_check does not necessarily mean that ALL rule
         newMail.Attachments.Add('//uh-nas/Groupshare3/ClinicalAdvisoryTeam/data_folders/rule_check_folder/rule_check_timestamp.csv')
         #send the message
         newMail.Send()
-        #sleep for 1 minute to allow the message to be received and the rule to excecute (delay of up to one minute has been observed)
-        time.sleep(65)
+        #sleep for 5 minutes to allow the message to be received and the rule to excecute (delay of up to one minute has been observed)
+        time.sleep(300)
         #read the file that has been saved by outlook rule "Rule Check"
         from_msg = pd.read_csv(rule_check_path / rule_ck_in_file_name )
         #recover the timestamp from the file saved by the rule
@@ -69,8 +69,8 @@ successful completion of this rule_check does not necessarily mean that ALL rule
         nowstamp = datetime.strptime(nowstamp, '%Y%m%d-%H%M')
         #calculate the difference in the timestamp sent through the rule process and the now timestamp
         diff = ((nowstamp - timestamp).total_seconds())
-        # if the difference between the timestamps is greater than 300 seconds 500, there is likely a problem with the rules; so send an email
-        if diff > 300:
+        # if the difference between the timestamps is greater than 900 seconds 15 min, there is likely a problem with the rules; so send an email
+        if diff > 900:
             alertMail = obj.CreateItem(olMailItem)
             alertMail.Subject = 'Problem with Outlook Rules'
             alertMail.To = 'ejmooney@salud.unm.edu'

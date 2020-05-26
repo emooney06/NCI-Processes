@@ -42,10 +42,13 @@ def save_attach(attach_name, path_to_save, name_to_save):
                     print('last print statement: ' + attachment.item, attachment.item.body)
 
 while True:
+    timestr = time.strftime("%Y%m%d-%H%M_")
     try:
         save_attach('#8940', '//uh-nas/Groupshare3/ClinicalAdvisoryTeam/data_folders/8940_covid_screen','#8940 Covid Screen.xlsx')
 
         save_attach('rule_check_timestamp', '//uh-nas/Groupshare3/ClinicalAdvisoryTeam/data_folders/rule_check_folder','timestamp_from_message.csv')
+
+        save_attach()
 
         print(timestr + ' executed with no issues; sleeping for 1 min')
     except:
@@ -62,6 +65,6 @@ while True:
         #],  # Or a mix of both
         )
         m.send()
-
+        print('exception triggered: ' + timestr)
 
     time.sleep(60)

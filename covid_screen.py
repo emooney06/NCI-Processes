@@ -33,6 +33,9 @@ gauth = GoogleAuth()
 gauth.LocalWebserverAuth()
 drive = GoogleDrive(gauth)
 
+#set the thresholds for testing and screening hours difference
+hrs_screen_threshold = 36
+hrs_test_threshold = 72
 
 max_pd_display()
 
@@ -59,7 +62,7 @@ while True:
         #create the list of units that should be filetered out of the dataframe (MBU will be added back later, it's filtered here so it can be manipulated separately
         filter_by = ['P ICN-3 (IN3P)', 'P ICN-4 (IN4P)', 'P NBICU (NBIP)', 'P NB Nursery (NBNP)', 'P Mother-Baby (MBUP)', 
                         'P Admit Prep (APIP)', 'P MCICU (MCIP)', 'P OB Spec Care (HRMP)', 'P E-D Inpt (EDIP)', 'P Ped ICU (PICP)']
-
+        #create a timedelta column for screening to admit time to capture those screened outside the threshold for screening recency
         df['admt_scrn_diff'] = (df['admit_dt_tm'] - df['screen_dt_tm']).astype('timedelta64[h]')
         df['admt_test_diff'] = (df['admit_dt_tm'] - df['testing_dt_tm']).astype('timedelta64[h]')
 
@@ -75,15 +78,15 @@ while True:
         #add mbu back to the dataframe (without beds that babies will be in)
         df = df.append(mbu_df)
         #filter out patients who have screened negative
-        pos_scrn_df = df[(df['exposure_result'] != 'No high exposure risk') &
-                            (df['symptoms_result'] != 'No high risk symptoms') | ((df['admt_scrn_diff'] > 36) | (df['admt_scrn_diff'] == None))]
-        
+        pos_scrn_df = df[(df['exposure_result'] != 'No exposure risk') &
+                            (df['symptoms_result'] != 'None of the above') | ((df['admt_scrn_diff'] > hrs_screen_threshold) | (df['admt_scrn_diff'] == None))]
+        #filter using another set of criteria to accomodate different variations of the screening form
         pos_scrn_df2 = pos_scrn_df[(pos_scrn_df['exposure_result'] != 'The patient has had no close contact') &
-                            (pos_scrn_df['symptoms_result'] != 'No high risk symptoms') | ((pos_scrn_df['admt_scrn_diff'] > 36) | (pos_scrn_df['admt_scrn_diff'] == None))]
+                            (pos_scrn_df['symptoms_result'] != 'None of the above') | ((pos_scrn_df['admt_scrn_diff'] > hrs_screen_threshold) | (pos_scrn_df['admt_scrn_diff'] == None))]
 
         #filter out patients who have results for COVID-19 test
         pos_scrn_not_neg_test_df = pos_scrn_df2[(pos_scrn_df2['testing_result'] != 'Not detected') &
-                                                (pos_scrn_df2['testing_result'] != 'Detected')  | ((pos_scrn_df2['admt_test_diff'] > 72) | (pos_scrn_df2['admt_test_diff'] == None))] 
+                                                (pos_scrn_df2['testing_result'] != 'Detected')  | ((pos_scrn_df2['admt_test_diff'] > hrs_test_threshold) | (pos_scrn_df2['admt_test_diff'] == None))] 
 
         pos_scrn_not_neg_test_df3 = pos_scrn_not_neg_test_df[(pos_scrn_not_neg_test_df['outside_result'] != 'Yes')] 
 
@@ -210,7 +213,7 @@ while True:
             #################################################################
             # to implement this in production, change .Display to .Send
             #################################################################
-            newMail.Send()
+            newMail.Display()
             #generate a timestamp to write to a file in my google drive.  - the file is checked by my raspbery pi to ensure this function is still online
             timestr = time.strftime("%Y%m%d-%H%M")
             #access the file by the id
