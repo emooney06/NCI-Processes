@@ -4,8 +4,8 @@
 # Author:  Ethan Mooney
 # Description:  This is a simple function that sends an email with attachment containing a timestamp.  An outlook rule 
 # called "Rule Check" saves the attachment to a specified file.  The file is then read by this function to verify the rule 
-# is running.  If execution of the rule takes greater than 120 seconds, an email alert is sent.  This process is repeated
-#  every 30 minues.   
+# is running.  If execution of the rule takes greater than N seconds, an email alert is sent.  This process is repeated
+#  every N minutes.   
 ############################################################################################################################
 
 import pandas as pd
@@ -55,8 +55,8 @@ successful completion of this rule_check does not necessarily mean that ALL rule
         newMail.Attachments.Add('//uh-nas/Groupshare3/ClinicalAdvisoryTeam/data_folders/rule_check_folder/rule_check_timestamp.csv')
         #send the message
         newMail.Send()
-        #sleep for 1 minute to allow the message to be received and the rule to excecute (delay of up to one minute has been observed)
-        time.sleep(65)
+        #sleep for 5 minutes to allow the message to be received and the rule to excecute (delay of up to one minute has been observed)
+        time.sleep(300)
         #read the file that has been saved by outlook rule "Rule Check"
         from_msg = pd.read_csv(rule_check_path / rule_ck_in_file_name )
         #recover the timestamp from the file saved by the rule
@@ -69,8 +69,8 @@ successful completion of this rule_check does not necessarily mean that ALL rule
         nowstamp = datetime.strptime(nowstamp, '%Y%m%d-%H%M')
         #calculate the difference in the timestamp sent through the rule process and the now timestamp
         diff = ((nowstamp - timestamp).total_seconds())
-        # if the difference between the timestamps is greater than 120 seconds, there is likely a problem with the Outlook rule; so send an email
-        if diff > 120:
+        # if the difference between the timestamps is greater than 900 seconds 15 min, there is likely a problem with the rules; so send an email
+        if diff > 900:
             alertMail = obj.CreateItem(olMailItem)
             alertMail.Subject = 'Problem with Outlook Rules'
             alertMail.To = 'ejmooney@salud.unm.edu'
@@ -87,7 +87,7 @@ successful completion of this rule_check does not necessarily mean that ALL rule
         alertMail2 = obj.CreateItem(olMailItem)
         alertMail2.Subject = 'Problem with Outlook Rules'
         alertMail2.To = 'ejmooney@salud.unm.edu'
-        alertMail2.body = '''Your rule check process has triggered an except statement.  Please check your "server machine" to ensure Outlook and the python script is running correctly.'''
+        alertMail2.body = '''Your rule check process has triggered an except statement.  Please check your "server machine" to ensure your mail_rules are working correctly.'''
         alertMail2.Send()
         print(str(nowstamp) + ' exception triggered; sleeping for 1 hour')
         time.sleep(3600)
