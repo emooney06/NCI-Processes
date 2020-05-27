@@ -13,7 +13,7 @@ a = Account('ejmooney@salud.unm.edu', credentials=creds, autodiscover=True)
 auto_folder = a.root / 'Top of Information Store' / 'auto_rules'
 
 attachment_to_save = ['#8940', 'random_rule_check']
-since = UTC_NOW() - timedelta(hours=1)
+since = UTC_NOW() - timedelta(hours=12)
 
 timestr = time.strftime("%Y%m%d-%H%M_")
 
