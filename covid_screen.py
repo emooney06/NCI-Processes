@@ -123,9 +123,9 @@ while True:
         'testing_result', 'testing_dt_tm', 'exposure_result', 'symptoms_result', 'screen_dt_tm', 'outside_result', 'outside_result_dt_tm', 'admt_scrn_diff', 'admt_test_diff', 'report_time']]
         #change the column names to be more human-readable
         pos_scrn_not_neg_test_df = pos_scrn_not_neg_test_df.rename(columns={"MRN- Organization": "MRN", "admit_dt_tm": "Admit Date", "location_room": "Room", "location_bed": "Bed", "careset_order": "Order", 
-                                                 "careset_order_dt_tm": "Order Date", "testing_result": "Test Result","testing_dt_tm": "Test Date", "exposure_result": "Exposure", "symptoms_result": "Symptoms", 
-                                                 "screen_dt_tm": "Screen Date", "outside_result": "OSH Result", "outside_result_dt_tm": "OSH Result Date", "admt_scrn_diff": "Admit-Screen Hrs",
-                                                 "admt_test_diff": "Admit-Test Hrs", "report_time": "Report Time"})
+                                                    "careset_order_dt_tm": "Order Date", "testing_result": "Test Result","testing_dt_tm": "Test Date", "exposure_result": "Exposure", "symptoms_result": "Symptoms", 
+                                                    "screen_dt_tm": "Screen Date", "outside_result": "OSH Result", "outside_result_dt_tm": "OSH Result Date", "admt_scrn_diff": "Admit-Screen Hrs",
+                                                    "admt_test_diff": "Admit-Test Hrs", "report_time": "Report Time"})
         #Note*** this is a copy of the Master Alias because normally reported units like CTH inpatient and Peds PACU are under ICU directors
         ma_df = pd.read_excel(support_path / 'ma_copy.xlsx')
         #limit the data set to only the columns needed
@@ -195,15 +195,15 @@ while True:
             disclaimer = '''\
             <html> 
                 <head> 
-                   <font size='2'> 
-                   Produced by:  UNMH Nursing Clinical Informatics<br>
-                   This material is produced in connection with, and for the purpose of the Patient Safety Evaluation System
-                   and-or Review Organization established at the University of New Mexico Hospital, and is therefore confidential 
-                   Patient Safety Work Product (“PSWP”) and/or confidential peer review material of the University of New Mexico Hospital 
-                   as defined in 42 C.F.R. subsection 3.20 and-or the Review Organizations Immunity Act, Section 41-9-1 et seq., NMSA 1978 
-                   as amended (ROIA).  As such, it is confidential and is protected under federal law 42 C.F.R. subsection3.206 and/or 
-                   ROIA.  Unauthorized disclosure of this document, enclosures thereto, and information therefrom is strictly prohibited.
-                   </font>
+                    <font size='2'> 
+                    Produced by:  UNMH Nursing Clinical Informatics<br>
+                    This material is produced in connection with, and for the purpose of the Patient Safety Evaluation System
+                    and-or Review Organization established at the University of New Mexico Hospital, and is therefore confidential 
+                    Patient Safety Work Product (“PSWP”) and/or confidential peer review material of the University of New Mexico Hospital 
+                    as defined in 42 C.F.R. subsection 3.20 and-or the Review Organizations Immunity Act, Section 41-9-1 et seq., NMSA 1978 
+                    as amended (ROIA).  As such, it is confidential and is protected under federal law 42 C.F.R. subsection3.206 and/or 
+                    ROIA.  Unauthorized disclosure of this document, enclosures thereto, and information therefrom is strictly prohibited.
+                    </font>
                 </head>            
             <html>
             '''
@@ -214,16 +214,19 @@ while True:
             # to implement this in production, change .Display to .Send
             #################################################################
             newMail.Display()
-            #generate a timestamp to write to a file in my google drive.  - the file is checked by my raspbery pi to ensure this function is still online
-            timestr = time.strftime("%Y%m%d-%H%M")
-            #access the file by the id
-            file1 = drive.CreateFile({'id': '1U362h3YgTplBN6uNIWXQV9dq4i0Z7VrY'})
-            #load the string as content to write
-            file1.SetContentString(timestr)
-            #write to the specified file
-            file1.Upload() # Files.insert()
+        #generate a timestamp to write to a file in my google drive.  - the file is checked by my raspbery pi to ensure this function is still online
+        timestr = time.strftime("%Y%m%d-%H%M")
+        #access the file by the id
+        file1 = drive.CreateFile({'id': '1U362h3YgTplBN6uNIWXQV9dq4i0Z7VrY'})
+        #load the string as content to write
+        file1.SetContentString(timestr)
+        #write to the specified file
+        file1.Upload() # Files.insert()
         print(str(timestr) + ' file found; emails sent and entering 30 min sleep')
         time.sleep(1800)
+
+
+    ####################################################################################################################################################
     except:
         #generate a timestamp to write to a file in my google drive.  - the file is checked by my raspbery pi to ensure this function is still online
         timestr = time.strftime("%Y%m%d-%H%M")
@@ -235,6 +238,6 @@ while True:
         file1.Upload() # Files.insert()
         print(str(timestr) + ' file not found; 30 min sleep')
         time.sleep(1800)
-    
+    ####################################################################################################################################################
 
 
