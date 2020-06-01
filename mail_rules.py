@@ -54,19 +54,23 @@ while True:
 
         print(timestr + ' executed with no issues; sleeping for 1 min')
     except:
-        m = Message(account=a, subject='an exeption was triggered with your mail_rule module',
-        body='please check the mail_rule module; executing one of the save_attach functions triggered an exception',
-        to_recipients=[
-            Mailbox(email_address='ejmooney@salud.unm.edu'),
-            Mailbox(email_address='mooney.ethan@gmail.com'),
-        ],
-        #cc_recipients=['carl@example.com', 'denice@example.com'],  # Simple strings work, too
-        #bcc_recipients=[
-        #    Mailbox(email_address='erik@example.com'),
-        #    'felicity@example.com',
-        #],  # Or a mix of both
-        )
-        m.send()
-        print('exception triggered: ' + timestr)
-
-    time.sleep(500)
+        try:
+            m = Message(account=a, subject='an exeption was triggered with your mail_rule module',
+            body='please check the mail_rule module; executing one of the save_attach functions triggered an exception',
+            to_recipients=[
+                Mailbox(email_address='ejmooney@salud.unm.edu'),
+                Mailbox(email_address='mooney.ethan@gmail.com'),
+            ],
+            #cc_recipients=['carl@example.com', 'denice@example.com'],  # Simple strings work, too
+            #bcc_recipients=[
+            #    Mailbox(email_address='erik@example.com'),
+            #    'felicity@example.com',
+            #],  # Or a mix of both
+            )
+            m.send()
+            print('exception triggered while trying to move message: ' + timestr)
+            time.sleep(60)
+        except:
+            print('2nd level exception triggered; while trying to move message and while trying to send warning email: ' + timestr)
+            time.sleep(60)
+    time.sleep(60)

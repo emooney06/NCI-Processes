@@ -208,7 +208,7 @@ while True:
             #################################################################
             # to implement this in production, change .Display to .Send
             #################################################################
-            newMail.Display()
+            newMail.Send()
         ##################################################################################################################################################
         ##delete the original file to prevent re-running the script on an outdated file if the process to drop the file in a folder errors
         os.remove(data_path / file_name)
