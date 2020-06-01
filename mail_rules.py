@@ -17,7 +17,7 @@ auto_folder = a.root / 'Top of Information Store' / 'auto_rules'
 attachment_to_save = ['#8940', 'random_rule_check']
 
 #generate a time difference variable for the recency of hours that messages have arrived
-since = UTC_NOW() - timedelta(hours=12)
+since = UTC_NOW() - timedelta(hours=4)
 
 #define the function with inputs (name of attachment you are looking for, file path you want to save the attachment to, and name you want to call the file)
 def save_attach(attach_name, path_to_save, name_to_save):
@@ -69,4 +69,4 @@ while True:
         m.send()
         print('exception triggered: ' + timestr)
 
-    time.sleep(60)
+    time.sleep(500)

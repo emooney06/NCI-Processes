@@ -70,7 +70,7 @@ successful completion of this rule_check does not necessarily mean that ALL rule
         #calculate the difference in the timestamp sent through the rule process and the now timestamp
         diff = ((nowstamp - timestamp).total_seconds())
         # if the difference between the timestamps is greater than 900 seconds 15 min, there is likely a problem with the rules; so send an email
-        if diff > 900:
+        if diff > 1200:
             alertMail = obj.CreateItem(olMailItem)
             alertMail.Subject = 'Problem with Outlook Rules'
             alertMail.To = 'ejmooney@salud.unm.edu'

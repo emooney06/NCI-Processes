@@ -66,8 +66,6 @@ while True:
         df['admt_scrn_diff'] = (df['admit_dt_tm'] - df['screen_dt_tm']).astype('timedelta64[h]')
         df['admt_test_diff'] = (df['admit_dt_tm'] - df['testing_dt_tm']).astype('timedelta64[h]')
 
-
-
         #pull mbu into a separte df 
         mbu_df = df[(df.location == 'P Mother-Baby (MBUP)')]
         #eliminate the rooms that babies will be in    
@@ -81,14 +79,14 @@ while True:
         pos_scrn_df = df[(df['exposure_result'] != 'No exposure risk') &
                             (df['symptoms_result'] != 'None of the above') | ((df['admt_scrn_diff'] > hrs_screen_threshold) | (df['admt_scrn_diff'] == None))]
         #filter using another set of criteria to accomodate different variations of the screening form
-        pos_scrn_df2 = pos_scrn_df[(pos_scrn_df['exposure_result'] != 'The patient has had no close contact') &
+        pos_scrn_df = pos_scrn_df[(pos_scrn_df['exposure_result'] != 'The patient has had no close contact') &
                             (pos_scrn_df['symptoms_result'] != 'None of the above') | ((pos_scrn_df['admt_scrn_diff'] > hrs_screen_threshold) | (pos_scrn_df['admt_scrn_diff'] == None))]
 
         #filter out patients who have results for COVID-19 test
-        pos_scrn_not_neg_test_df = pos_scrn_df2[(pos_scrn_df2['testing_result'] != 'Not detected') &
-                                                (pos_scrn_df2['testing_result'] != 'Detected')  | ((pos_scrn_df2['admt_test_diff'] > hrs_test_threshold) | (pos_scrn_df2['admt_test_diff'] == None))] 
+        pos_scrn_not_neg_test_df = pos_scrn_df[(pos_scrn_df['testing_result'] != 'Not detected') &
+                                                (pos_scrn_df['testing_result'] != 'Detected')  | ((pos_scrn_df['admt_test_diff'] > hrs_test_threshold) | (pos_scrn_df['admt_test_diff'] == None))] 
 
-        pos_scrn_not_neg_test_df3 = pos_scrn_not_neg_test_df[(pos_scrn_not_neg_test_df['outside_result'] != 'Yes')] 
+        pos_scrn_not_neg_test_df = pos_scrn_not_neg_test_df[(pos_scrn_not_neg_test_df['outside_result'] != 'Yes')] 
 
         ##################################################################################################################################################
         #This section can easily be modified to generate a file of fins that have been reported already.  This could feasibly be modified to enact limits 
@@ -105,19 +103,19 @@ while True:
         ##################################################################################################################################################
 
         #get rid of the NaN values (null values) and replace with "no results found string"
-        pos_scrn_not_neg_test_df['careset_order'] = pos_scrn_not_neg_test_df.careset_order.replace(np.nan, 'no results found', regex=True)
-        pos_scrn_not_neg_test_df['testing_result'] = pos_scrn_not_neg_test_df.testing_result.replace(np.nan, 'no results found', regex=True)
-        pos_scrn_not_neg_test_df['exposure_result'] = pos_scrn_not_neg_test_df.exposure_result.replace(np.nan, 'no results found', regex=True)
-        pos_scrn_not_neg_test_df['symptoms_result'] = pos_scrn_not_neg_test_df.symptoms_result.replace(np.nan, 'no results found', regex=True)
-        pos_scrn_not_neg_test_df['outside_result'] = pos_scrn_not_neg_test_df.outside_result.replace(np.nan, 'no results found', regex=True)
-        pos_scrn_not_neg_test_df['outside_result_dt_tm'] = pos_scrn_not_neg_test_df.outside_result_dt_tm.replace(np.nan, 'no results found', regex=True)
-        pos_scrn_not_neg_test_df['admt_scrn_diff'] = pos_scrn_not_neg_test_df.admt_scrn_diff.replace(np.nan, 'no results found', regex=True)
-        pos_scrn_not_neg_test_df['admt_test_diff'] = pos_scrn_not_neg_test_df.admt_test_diff.replace(np.nan, 'no results found', regex=True)
+        pos_scrn_not_neg_test_df['careset_order'] = pos_scrn_not_neg_test_df['careset_order'].replace(np.nan, 'no results found', regex=True)
+        pos_scrn_not_neg_test_df['testing_result'] = pos_scrn_not_neg_test_df['testing_result'].replace(np.nan, 'no results found', regex=True)
+        pos_scrn_not_neg_test_df['exposure_result'] = pos_scrn_not_neg_test_df['exposure_result'].replace(np.nan, 'no results found', regex=True)
+        pos_scrn_not_neg_test_df['symptoms_result'] = pos_scrn_not_neg_test_df['symptoms_result'].replace(np.nan, 'no results found', regex=True)
+        pos_scrn_not_neg_test_df['outside_result'] = pos_scrn_not_neg_test_df['outside_result'].replace(np.nan, 'no results found', regex=True)
+        pos_scrn_not_neg_test_df['outside_result_dt_tm'] = pos_scrn_not_neg_test_df['outside_result_dt_tm'].replace(np.nan, 'no results found', regex=True)
+        pos_scrn_not_neg_test_df['admt_scrn_diff'] = pos_scrn_not_neg_test_df['admt_scrn_diff'].replace(np.nan, 'no results found', regex=True)
+        pos_scrn_not_neg_test_df['admt_test_diff'] = pos_scrn_not_neg_test_df['admt_test_diff'].replace(np.nan, 'no results found', regex=True)
 
         #get rid of the "naT" values, which are blank (null) date/time values - replace these values with the string "no results found"
-        pos_scrn_not_neg_test_df['careset_order_dt_tm'] = pos_scrn_not_neg_test_df.careset_order_dt_tm.astype(object).where(pos_scrn_not_neg_test_df.careset_order_dt_tm.notnull(), 'no results found')
-        pos_scrn_not_neg_test_df['testing_dt_tm'] = pos_scrn_not_neg_test_df.testing_dt_tm.astype(object).where(pos_scrn_not_neg_test_df.testing_dt_tm.notnull(), 'no results found')
-        pos_scrn_not_neg_test_df['screen_dt_tm'] = pos_scrn_not_neg_test_df.screen_dt_tm.astype(object).where(pos_scrn_not_neg_test_df.screen_dt_tm.notnull(), 'no results found')
+        pos_scrn_not_neg_test_df['careset_order_dt_tm'] = pos_scrn_not_neg_test_df['careset_order_dt_tm'].astype(object).where(pos_scrn_not_neg_test_df.careset_order_dt_tm.notnull(), 'no results found')
+        pos_scrn_not_neg_test_df['testing_dt_tm'] = pos_scrn_not_neg_test_df['testing_dt_tm'].astype(object).where(pos_scrn_not_neg_test_df.testing_dt_tm.notnull(), 'no results found')
+        pos_scrn_not_neg_test_df['screen_dt_tm'] = pos_scrn_not_neg_test_df['screen_dt_tm'].astype(object).where(pos_scrn_not_neg_test_df.screen_dt_tm.notnull(), 'no results found')
         #remove the columns that are not needed
         pos_scrn_not_neg_test_df = pos_scrn_not_neg_test_df[['MRN- Organization', 'location', 'admit_dt_tm', 'location_room', 'location_bed', 'careset_order', 'careset_order_dt_tm',
         'testing_result', 'testing_dt_tm', 'exposure_result', 'symptoms_result', 'screen_dt_tm', 'outside_result', 'outside_result_dt_tm', 'admt_scrn_diff', 'admt_test_diff', 'report_time']]
@@ -138,9 +136,6 @@ while True:
         email_dict = ma_df.set_index('location')['UD_Email'].to_dict()
         #create a list of locations to iterate through
         location_list = pos_scrn_not_neg_test_df.location.unique()
-
-        #delete the original file to prevent re-running the script on an outdated file if the process to drop the file in a folder errors
-        os.remove(data_path / file_name)
         #reate the mail object
         olMailItem = 0x0
         #create an object to interact with the outlook application
@@ -214,16 +209,24 @@ while True:
             # to implement this in production, change .Display to .Send
             #################################################################
             newMail.Display()
-        #generate a timestamp to write to a file in my google drive.  - the file is checked by my raspbery pi to ensure this function is still online
-        timestr = time.strftime("%Y%m%d-%H%M")
-        #access the file by the id
-        file1 = drive.CreateFile({'id': '1U362h3YgTplBN6uNIWXQV9dq4i0Z7VrY'})
-        #load the string as content to write
-        file1.SetContentString(timestr)
-        #write to the specified file
-        file1.Upload() # Files.insert()
-        print(str(timestr) + ' file found; emails sent and entering 30 min sleep')
-        time.sleep(1800)
+        ##################################################################################################################################################
+        ##delete the original file to prevent re-running the script on an outdated file if the process to drop the file in a folder errors
+        os.remove(data_path / file_name)
+        ##################################################################################################################################################
+
+        try:
+            #generate a timestamp to write to a file in my google drive.  - the file is checked by my raspbery pi to ensure this function is still online
+            timestr = time.strftime("%Y%m%d-%H%M")
+            #access the file by the id
+            file1 = drive.CreateFile({'id': '1U362h3YgTplBN6uNIWXQV9dq4i0Z7VrY'})
+            #load the string as content to write
+            file1.SetContentString(timestr)
+            #write to the specified file
+            file1.Upload() # Files.insert()
+            print(str(timestr) + ' exception raised with g-drive; emails sent and entering 30 min sleep, but no timestamp was logged')
+            time.sleep(1800)
+        except:
+            time.sleep(1800)
 
 
     ####################################################################################################################################################
