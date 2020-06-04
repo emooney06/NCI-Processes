@@ -56,7 +56,7 @@ successful completion of this rule_check does not necessarily mean that ALL rule
         #send the message
         newMail.Send()
         #sleep for 5 minutes to allow the message to be received and the rule to excecute (delay of up to one minute has been observed)
-        time.sleep(300)
+        time.sleep(600)
         #read the file that has been saved by outlook rule "Rule Check"
         from_msg = pd.read_csv(rule_check_path / rule_ck_in_file_name )
         #recover the timestamp from the file saved by the rule
@@ -70,24 +70,28 @@ successful completion of this rule_check does not necessarily mean that ALL rule
         #calculate the difference in the timestamp sent through the rule process and the now timestamp
         diff = ((nowstamp - timestamp).total_seconds())
         # if the difference between the timestamps is greater than 900 seconds 15 min, there is likely a problem with the rules; so send an email
-        if diff > 1200:
+        if diff > 1800:
             alertMail = obj.CreateItem(olMailItem)
             alertMail.Subject = 'Problem with Outlook Rules'
             alertMail.To = 'ejmooney@salud.unm.edu'
             alertMail.body = '''Your rule check process has detected a problem with an outlook rule.  Please check your "server machine" to ensure Outlook is running correctly.'''
             alertMail.Send()
-            print(str(nowstamp) + ' try statment executed and detected a problem; message sent and sleeping for 1 hour')
-            time.sleep(3600)
+            print(str(nowstamp) + ' try statment executed and detected a problem; message sent and sleeping for 12 hours')
+            time.sleep(43200)
         else:
             #if the difference between the timestamps is < 120 seconds, the rule appears to be in place so no action/alert needs to be made
-            print(str(nowstamp) + ' try statement executed without any issue, sleeping for 1 hour')
-            time.sleep(3600)
+            print(str(nowstamp) + ' try statement executed without any issue, sleeping for 12 hours')
+            time.sleep(43200)
     except:
-        #if for some reason an exception is encountered, handle it with an email alert and retry the process in an hour
-        alertMail2 = obj.CreateItem(olMailItem)
-        alertMail2.Subject = 'Problem with Outlook Rules'
-        alertMail2.To = 'ejmooney@salud.unm.edu'
-        alertMail2.body = '''Your rule check process has triggered an except statement.  Please check your "server machine" to ensure your mail_rules are working correctly.'''
-        alertMail2.Send()
-        print(str(nowstamp) + ' exception triggered; sleeping for 1 hour')
-        time.sleep(3600)
+        try:
+            #if for some reason an exception is encountered, handle it with an email alert and retry the process in an hour
+            alertMail2 = obj.CreateItem(olMailItem)
+            alertMail2.Subject = 'Problem with Outlook Rules'
+            alertMail2.To = 'ejmooney@salud.unm.edu'
+            alertMail2.body = '''Your rule check process has triggered an except statement.  Please check your "server machine" to ensure your mail_rules are working correctly.'''
+            alertMail2.Send()
+            print(str(nowstamp) + ' exception triggered; sleeping for 12 hours')
+            time.sleep(43200)
+        except:
+            print(str(nowstamp) + ' second level exception occurred when attempting to send warning email; will try again in 12 hrs')
+            time.sleep(43200)

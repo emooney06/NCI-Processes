@@ -21,6 +21,8 @@ since = UTC_NOW() - timedelta(hours=4)
 
 #define the function with inputs (name of attachment you are looking for, file path you want to save the attachment to, and name you want to call the file)
 def save_attach(attach_name, path_to_save, name_to_save):
+    #generate a time difference variable for the recency of hours that messages have arrived
+    since = UTC_NOW() - timedelta(hours=4)
     #generate a timestamp for the print message  
     timestr = time.strftime("%Y%m%d-%H%M_")
     #filter the items in the general inbox by date received less than since variable (1 hour)
@@ -41,36 +43,40 @@ def save_attach(attach_name, path_to_save, name_to_save):
                     print('saved attachment to', local_path)
                     #move the message to the auto_folder
                     item.move(auto_folder)            
-            elif isinstance(attachment, itemattachment):
-                if isinstance(attachment.item, message):
-                    print('last print statement: ' + attachment.item, attachment.item.body)
+            #elif isinstance(attachment, ItemAttachment):
+            #    if isinstance(attachment.item, Message):
+            #        print('last print statement: ' + attachment.item, attachment.item.body)
 
 while True:
     timestr = time.strftime("%Y%m%d-%H%M_")
     try:
         save_attach('#8940', '//uh-nas/Groupshare3/ClinicalAdvisoryTeam/data_folders/8940_covid_screen','#8940 Covid Screen.xlsx')
-
+        print(timestr + ' executed #8940 rule with no issues; sleeping for 5 min')
+    except Exception as e: 
+        print(timestr + ' ' + e + 'trouble executing #8940')
+    try:
         save_attach('rule_check_timestamp', '//uh-nas/Groupshare3/ClinicalAdvisoryTeam/data_folders/rule_check_folder','timestamp_from_message.csv')
-
-        print(timestr + ' executed with no issues; sleeping for 1 min')
-    except:
-        try:
-            m = Message(account=a, subject='an exeption was triggered with your mail_rule module',
-            body='please check the mail_rule module; executing one of the save_attach functions triggered an exception',
-            to_recipients=[
-                Mailbox(email_address='ejmooney@salud.unm.edu'),
-                Mailbox(email_address='mooney.ethan@gmail.com'),
-            ],
-            #cc_recipients=['carl@example.com', 'denice@example.com'],  # Simple strings work, too
-            #bcc_recipients=[
-            #    Mailbox(email_address='erik@example.com'),
-            #    'felicity@example.com',
-            #],  # Or a mix of both
-            )
-            m.send()
-            print('exception triggered while trying to move message: ' + timestr)
-            time.sleep(60)
-        except:
-            print('2nd level exception triggered; while trying to move message and while trying to send warning email: ' + timestr)
-            time.sleep(60)
-    time.sleep(60)
+        print(timestr + ' executed rule_check_timestamp rule with no issues; sleeping for 5 min')
+    except Exception as e: 
+        print(timestr + ' ' + e + 'trouble executing  rule_check_timestamp')    
+    #except Exception as e:
+    #try:
+    #    #m = Message(account=a, subject='an exception was triggered with your mail_rule module',
+    #    #body='please check the mail_rule module; executing one of the save_attach functions triggered an exception',
+    #    #to_recipients=[
+    #    #    Mailbox(email_address='ejmooney@salud.unm.edu'),
+    #    #    Mailbox(email_address='mooney.ethan@gmail.com'),
+    #    #],
+    #    ##cc_recipients=['carl@example.com', 'denice@example.com'],  # Simple strings work, too
+    #    ##bcc_recipients=[
+    #    ##    Mailbox(email_address='erik@example.com'),
+    #    ##    'felicity@example.com',
+    #    ##],  # Or a mix of both
+    #    #)
+    #    #m.send()
+    #    print(e)
+    #    print('exception triggered while trying to move message: ' + attach_name + timestr)
+    #except Exception as e:
+    #    print(e)
+    #    print('2nd level exception triggered; while trying to move message and while trying to send warning email: ' + timestr)
+    time.sleep(300)
