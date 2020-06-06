@@ -55,6 +55,8 @@ successful completion of this rule_check does not necessarily mean that ALL rule
         newMail.Attachments.Add('//uh-nas/Groupshare3/ClinicalAdvisoryTeam/data_folders/rule_check_folder/rule_check_timestamp.csv')
         #send the message
         newMail.Send()
+        print(timestr)
+        print('message sent without error; will waiting 10 min to check mail rule has saved to file')
         #sleep for 5 minutes to allow the message to be received and the rule to excecute (delay of up to one minute has been observed)
         time.sleep(600)
         #read the file that has been saved by outlook rule "Rule Check"
@@ -76,11 +78,11 @@ successful completion of this rule_check does not necessarily mean that ALL rule
             alertMail.To = 'ejmooney@salud.unm.edu'
             alertMail.body = '''Your rule check process has detected a problem with an outlook rule.  Please check your "server machine" to ensure Outlook is running correctly.'''
             alertMail.Send()
-            print(str(nowstamp) + ' try statment executed and detected a problem; message sent and sleeping for 12 hours')
+            print(str(nowstamp) + ' from rule_check - try statment executed and detected a problem; message sent and sleeping for 12 hours')
             time.sleep(43200)
         else:
             #if the difference between the timestamps is < 120 seconds, the rule appears to be in place so no action/alert needs to be made
-            print(str(nowstamp) + ' try statement executed without any issue, sleeping for 12 hours')
+            print(str(nowstamp) + ' from rule_check - try statement executed without any issue, sleeping for 12 hours')
             time.sleep(43200)
     except:
         try:
@@ -90,8 +92,8 @@ successful completion of this rule_check does not necessarily mean that ALL rule
             alertMail2.To = 'ejmooney@salud.unm.edu'
             alertMail2.body = '''Your rule check process has triggered an except statement.  Please check your "server machine" to ensure your mail_rules are working correctly.'''
             alertMail2.Send()
-            print(str(nowstamp) + ' exception triggered; sleeping for 12 hours')
-            time.sleep(43200)
+            print(str(nowstamp) + ' from rule_check - exception triggered; sleeping for 4 hours')
+            time.sleep(14400)
         except:
-            print(str(nowstamp) + ' second level exception occurred when attempting to send warning email; will try again in 12 hrs')
-            time.sleep(43200)
+            print(str(nowstamp) + ' from rule_check - second level exception occurred when attempting to send warning email; will try again in 4 hrs')
+            time.sleep(14400)

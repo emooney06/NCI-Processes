@@ -3,9 +3,16 @@ from pathlib import Path
 from datetime import timedelta
 from exchangelib import UTC_NOW
 import time 
+import stdiomask
+  
+try: 
+    ad_password = stdiomask.getpass(prompt= 'Enter Active Directory Password: ', mask='*') 
+except Exception as error: 
+    print('ERROR', error) 
+
 
 #credentials are the domain name with username and password
-creds = Credentials(username='health\\ejmooney', password='python#1')
+creds = Credentials(username='health\\ejmooney', password=ad_password)
 #account configuration
 config = Configuration(server='HSCLink.health.unm.edu', credentials=creds)
 #create the instance of account class object
@@ -13,11 +20,11 @@ a = Account('ejmooney@salud.unm.edu', credentials=creds, autodiscover=True)
 #define and create the auto_rules folder
 auto_folder = a.root / 'Top of Information Store' / 'auto_rules'
 
-#list of file name text keywords in attachments to save
-attachment_to_save = ['#8940', 'random_rule_check']
+##list of file name text keywords in attachments to save
+#attachment_to_save = ['#8940', 'random_rule_check']
 
 #generate a time difference variable for the recency of hours that messages have arrived
-since = UTC_NOW() - timedelta(hours=4)
+#since = UTC_NOW() - timedelta(hours=4)
 
 #define the function with inputs (name of attachment you are looking for, file path you want to save the attachment to, and name you want to call the file)
 def save_attach(attach_name, path_to_save, name_to_save):
@@ -51,14 +58,20 @@ while True:
     timestr = time.strftime("%Y%m%d-%H%M_")
     try:
         save_attach('#8940', '//uh-nas/Groupshare3/ClinicalAdvisoryTeam/data_folders/8940_covid_screen','#8940 Covid Screen.xlsx')
-        print(timestr + ' executed #8940 rule with no issues; sleeping for 5 min')
+        print(timestr) 
+        print('from mail_rule - executed #8940 rule with no issues')
     except Exception as e: 
-        print(timestr + ' ' + e + 'trouble executing #8940')
+        print(timestr)
+        print(e)
+        print('trouble executing #8940')
     try:
         save_attach('rule_check_timestamp', '//uh-nas/Groupshare3/ClinicalAdvisoryTeam/data_folders/rule_check_folder','timestamp_from_message.csv')
-        print(timestr + ' executed rule_check_timestamp rule with no issues; sleeping for 5 min')
+        print(timestr)
+        print('from mail_rule - executed rule_check_timestamp rule with no issues')
     except Exception as e: 
-        print(timestr + ' ' + e + 'trouble executing  rule_check_timestamp')    
+        print(timestr)
+        print(e)
+        print('from mail_rule - trouble executing rule_check_timestamp')    
     #except Exception as e:
     #try:
     #    #m = Message(account=a, subject='an exception was triggered with your mail_rule module',
@@ -79,4 +92,5 @@ while True:
     #except Exception as e:
     #    print(e)
     #    print('2nd level exception triggered; while trying to move message and while trying to send warning email: ' + timestr)
-    time.sleep(300)
+    print('from mail_rule - sleeping for 20 minutes')
+    time.sleep(1200)
