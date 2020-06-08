@@ -14,7 +14,7 @@ except Exception as error:
 #credentials are the domain name with username and password
 creds = Credentials(username='health\\ejmooney', password=ad_password)
 #account configuration
-config = Configuration(server='HSCLink.health.unm.edu', credentials=creds)
+config = Configuration(server='HSCLink.health.unm.edu', credentials=creds, retry_policy=FaultTolerance(max_wait=3600))
 #create the instance of account class object
 a = Account('ejmooney@salud.unm.edu', credentials=creds, autodiscover=True)
 #define and create the auto_rules folder

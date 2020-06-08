@@ -5,7 +5,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{e24a26cf-b35e-4227-9590-1b48572e09a3}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>rule_check.py</StartupFile>
+    <StartupFile>
+    </StartupFile>
     <SearchPath />
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -23,12 +24,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="adt_collection.py" />
+    <Compile Include="covid_screen.py" />
     <Compile Include="edu_cert.py" />
     <Compile Include="hoc_v1.4.py" />
     <Compile Include="micu_drsng_changes.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="covid_screen.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="rule_check.py" />
