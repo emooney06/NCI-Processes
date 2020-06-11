@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{e24a26cf-b35e-4227-9590-1b48572e09a3}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>rule_check.py</StartupFile>
+    <StartupFile>sandbox3.py</StartupFile>
     <SearchPath />
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -25,10 +25,16 @@
     <Compile Include="adt_collection.py" />
     <Compile Include="edu_cert.py" />
     <Compile Include="hoc_v1.4.py" />
+    <Compile Include="kronos.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="micu_drsng_changes.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="covid_screen.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="resident_retention.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="rule_check.py" />
@@ -45,6 +51,15 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="mail_rules.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="sandbox3.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="sandbox5.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ss_official.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="test_email.py">

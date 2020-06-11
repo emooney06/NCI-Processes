@@ -76,7 +76,8 @@ delete_last_quarter = str(" \
 # have an excel copy if the table is not too big
 sql_all = " \
     SELECT * \
-    FROM ndnqi_raw_export" 
+    FROM ndnqi_raw_export" \
+
 
 # read the excel file from the raw file path with the year and quarter as named in folder
 df_to_upload = pd.read_excel(raw_file + 'NDNQI Raw Output ' + year_and_qtr_str + '.xlsx')
