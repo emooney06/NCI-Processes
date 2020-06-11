@@ -20,18 +20,23 @@ from pathlib import Path
 from my_functions import max_pd_display, check_answer, make_string_cost_center, add_columns_for_reporting, double_check
 from my_classes import FileDateVars
 from my_variables import master_alias, mmm_dict
-import win32com.client
 import time 
-from pydrive.auth import GoogleAuth
-from pydrive.drive import GoogleDrive
-from google import auth
-from oauth2client.client import GoogleCredentials
+import stdiomask
+from exchangelib import DELEGATE, Account, Credentials, Configuration, FileAttachment, ItemAttachment, Message, CalendarItem, HTMLBody, Mailbox, FaultTolerance, HTMLBody
+
+ 
+try: 
+    ad_password = stdiomask.getpass(prompt= 'Enter Active Directory Password: ', mask='*') 
+except Exception as error: 
+    print('ERROR', error) 
 
 
-#authorize the google drive access
-gauth = GoogleAuth()
-gauth.LocalWebserverAuth()
-drive = GoogleDrive(gauth)
+#credentials are the domain name with username and password
+creds = Credentials(username='health\\ejmooney', password=ad_password)
+#account configuration
+config = Configuration(server='HSCLink.health.unm.edu', credentials=creds, retry_policy=FaultTolerance(max_wait=3600))
+
+
 
 #set the thresholds for testing and screening hours difference
 hrs_screen_threshold = 36
@@ -44,7 +49,6 @@ data_path = Path('//uh-nas/Groupshare3/ClinicalAdvisoryTeam/data_folders/8940_co
 support_path = Path('//uh-nas/Groupshare3/ClinicalAdvisoryTeam/data_folders/support_files')
 archive_path = Path('//uh-nas/Groupshare3/ClinicalAdvisoryTeam/data_folders/8940_covid_screen/8940_archive')
 file_name = '#8940 Covid Screen.xlsx'
-
 while True:
     try:
         #create a timestamp for the archive file name
@@ -136,10 +140,6 @@ while True:
         email_dict = ma_df.set_index('location')['UD_Email'].to_dict()
         #create a list of locations to iterate through
         location_list = pos_scrn_not_neg_test_df.location.unique()
-        #reate the mail object
-        olMailItem = 0x0
-        #create an object to interact with the outlook application
-        obj = win32com.client.Dispatch("Outlook.Application")
         #generate a global object to be accessible across functions  - I don't think this is necessary any longer... not sure why I defined it global
         global unit_table
         #loop through each location in the list of locations
@@ -157,13 +157,11 @@ while True:
                 print(email)
             #filter the dataframe of non-negative screens with non-negative test results by unit location
             unit_df = pos_scrn_not_neg_test_df[(pos_scrn_not_neg_test_df['location']) == location]
+            #create the instance of account class object
+            a = Account('nci@salud.unm.edu', credentials=creds, autodiscover=True)
             #convert it to a dataframe to embed in email
             unit_table = unit_df.to_html(index=False)
-            #generate the email with all the parts
-            newMail = obj.CreateItem(olMailItem)
-            newMail.Subject = 'FYI - Possible COVID-19 Risk *Secure*'
-            newMail.To = email
-            newMail.Cc = 'ejmooney@salud.unm.edu'
+
             greeting = '''\
             <html> 
                 <head> 
@@ -172,9 +170,9 @@ while True:
                     Clinical Informatics team.  This message is for your information only - no response is needed.  
                     <br><br>
                     Below you will find patients identified by our algorithm as a potential COVID-19 exposure risk because they have not screened negative
-                    and do not yet have current COVID-19 test results. 
+                    within 36 hours of admission and/or do not have COVID-19 test results within 72 hours of admission. 
                     <br><br>
-                    If you find a patient who needs COVID-19 Testing, you may inform their provider that testing can be ordered via the "COVID-19 Test 
+                    If you find a patient who needs COVID-19 testing, you may inform the provider that testing can be ordered via the "COVID-19 Test 
                     careset".  If you find a patient who should be screened, the screening can be found in the ad-hoc form titled "Infectious Disease 
                     Travel Screening".  
                     <br><br>
@@ -204,43 +202,31 @@ while True:
             '''
             #add the parts of the mail message
             html = greeting + unit_table + disclaimer
-            newMail.HTMLBody = html
+            m = Message(
+            account=a,
+            subject='FYI - Possible COVID-19 Risk *Secure*',
+            body= HTMLBody(html),
+            to_recipients=[
+                Mailbox(email_address=email), # will be email variable
+            ],
+            cc_recipients=[],  # Simple strings work, too
+            bcc_recipients=[],  # Or a mix of both
+            )
             #################################################################
             # to implement this in production, change .Display to .Send
             #################################################################
-            newMail.Send()
+            m.send()
         ##################################################################################################################################################
         ##delete the original file to prevent re-running the script on an outdated file if the process to drop the file in a folder errors
         os.remove(data_path / file_name)
         ##################################################################################################################################################
-
-        try:
-            #generate a timestamp to write to a file in my google drive.  - the file is checked by my raspbery pi to ensure this function is still online
-            timestr = time.strftime("%Y%m%d-%H%M")
-            #access the file by the id
-            file1 = drive.CreateFile({'id': '1U362h3YgTplBN6uNIWXQV9dq4i0Z7VrY'})
-            #load the string as content to write
-            file1.SetContentString(timestr)
-            #write to the specified file
-            file1.Upload() # Files.insert()
-            print(str(timestr) + ' exception raised with g-drive; emails sent and entering 30 min sleep, but no timestamp was logged')
-            time.sleep(1800)
-        except:
-            time.sleep(1800)
-
+        print(str(timestr) + ' COVID-19 Risk Emails Sent')
 
     ####################################################################################################################################################
-    except:
-        #generate a timestamp to write to a file in my google drive.  - the file is checked by my raspbery pi to ensure this function is still online
-        timestr = time.strftime("%Y%m%d-%H%M")
-        #access the file by the id
-        file1 = drive.CreateFile({'id': '1U362h3YgTplBN6uNIWXQV9dq4i0Z7VrY'})
-        #load the string as content to write
-        file1.SetContentString(timestr)
-        #write to the specified file
-        file1.Upload() # Files.insert()
+    except Exception as e:
+        print(e)
         print(str(timestr) + ' file not found; 30 min sleep')
-        time.sleep(1800)
+    time.sleep(1800)
     ####################################################################################################################################################
 
 
